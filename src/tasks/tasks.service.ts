@@ -1,7 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { Task, TaskStatus } from './tasks.model'
 import { v1 as uuid } from 'uuid'
-import { CreateTaskDto, EditTaskDto } from './dto/create-task.dto'
+import { CreateTaskDto } from './dto/create-task.dto'
+import { EditTaskDto } from './dto/edit-task.dto'
 import { GetTaskDto } from './dto/get-task-dto'
 
 @Injectable()
@@ -32,7 +33,13 @@ export class TasksService {
   }
 
   getTaskById(id: string): Task {
-    return this.tasks.find((ele) => ele.id === id)
+    const found = this.tasks.find((ele) => ele.id === id)
+
+    if (!found) {
+      throw new NotFoundException('Task with given Id not found')
+    }
+
+    return found
   }
 
   createTask(createTaskDto: CreateTaskDto): Task {
@@ -50,34 +57,33 @@ export class TasksService {
   }
 
   editTaskById(id: string, editTask: EditTaskDto): Task {
-    let editTaskIndex = -1
-    this.tasks.forEach((ele, index) => {
-      if (ele.id === id) {
-        editTaskIndex = index
-        return
-      }
-    })
+    // let editTaskIndex = -1
+    // this.tasks.forEach((ele, index) => {
+    //   if (ele.id === id) {
+    //     editTaskIndex = index
+    //     return
+    //   }
+    // })
 
-    if (editTaskIndex < 0) {
-      throw new HttpException('id not found', HttpStatus.NOT_FOUND)
-    }
-    Object.assign(this.tasks[editTaskIndex], editTask)
-    return this.tasks[editTaskIndex]
+    // if (editTaskIndex < 0) {
+    //   throw new HttpException('id not found', HttpStatus.NOT_FOUND)
+    // }
+    // Object.assign(this.tasks[editTaskIndex], editTask)
+    // return this.tasks[editTaskIndex]
+    const task = this.getTaskById(id)
+    Object.assign(task, editTask)
+    return task
   }
 
-  deleteTaskById(id: string): void {
-    let matchId = false
+  deleteTaskById(id: string): Task {
+    const found = this.getTaskById(id)
     this.tasks = this.tasks.filter((ele) => {
-      if (ele.id === id) {
-        matchId = true
+      if (ele.id === found.id) {
         return false
       }
       return true
     })
 
-    if (!matchId) {
-      throw new HttpException('id not found', HttpStatus.NOT_FOUND)
-    }
-    return
+    return found
   }
 }

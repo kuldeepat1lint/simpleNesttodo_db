@@ -1,6 +1,7 @@
-import { TaskStatus } from '../tasks.model'
 import { IsNotEmpty } from 'class-validator'
-export class CreateTaskDto {
+import { TaskStatus } from '../tasks.model'
+
+export class EditTaskDto {
   @IsNotEmpty()
   title: string
   @IsNotEmpty()
