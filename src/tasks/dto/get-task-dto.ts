@@ -1,5 +1,5 @@
 import { IsIn, IsNotEmpty, IsOptional } from 'class-validator'
-import { TaskStatus } from '../tasks.model'
+import { TaskStatus } from '../constants/taskStatus.enum'
 
 const allowedStatuses = Object.values(TaskStatus)
 export class GetTaskDto {

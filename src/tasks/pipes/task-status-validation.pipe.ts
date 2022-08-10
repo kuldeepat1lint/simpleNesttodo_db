@@ -4,7 +4,7 @@ import {
   PipeTransform,
 } from '@nestjs/common'
 import { EditTaskDto } from '../dto/edit-task.dto'
-import { TaskStatus } from '../tasks.model'
+import { TaskStatus } from '../constants/taskStatus.enum'
 
 export class TaskStatusValidationPipe implements PipeTransform {
   readonly allowedStatuses = [
